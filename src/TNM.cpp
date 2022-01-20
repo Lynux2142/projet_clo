@@ -6,7 +6,7 @@
 /*   By: lynux <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 13:32:07 by lynux             #+#    #+#             */
-/*   Updated: 2022/01/20 18:24:45 by lynux            ###   ########.fr       */
+/*   Updated: 2022/01/20 18:44:35 by lynux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	SDL_ExitWithError(const char *message, const char *error) {
 }
 
 void	init(SDL_DisplayMode screen, SDL_Window **window, SDL_Renderer **renderer, SDL_Surface **background, SDL_Surface **square, Mix_Music **sound) {
-	if ((*window = SDL_CreateWindow("Test de la négligence sensorielle", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen.w, screen.h, SDL_WINDOW_FULLSCREEN)) == NULL)
+	if ((*window = SDL_CreateWindow("Sensory Neglect Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen.w, screen.h, SDL_WINDOW_FULLSCREEN)) == NULL)
 		SDL_ExitWithError("Error Create window", SDL_GetError());
 	if ((*renderer = SDL_CreateRenderer(*window, -1, 0)) == NULL)
 		SDL_ExitWithError("Error Create renderer", SDL_GetError());
