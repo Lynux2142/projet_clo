@@ -6,7 +6,7 @@
 /*   By: lynux <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 13:32:07 by lynux             #+#    #+#             */
-/*   Updated: 2022/01/20 16:52:57 by lynux            ###   ########.fr       */
+/*   Updated: 2022/01/20 18:24:45 by lynux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,39 @@ void	print_surface(SDL_Renderer **renderer, SDL_Surface *surface, SDL_Rect *dest
 	SDL_DestroyTexture(texture);
 }
 
-void	draw_line(SDL_Renderer **renderer, SDL_Surface **background, SDL_MouseMotionEvent motion) {
-	SDL_Rect	rect = {motion.x, motion.y, 1, 1};
+void	putpixel(SDL_Surface **background, int x, int y) {
+	Uint8		*pixels = (Uint8*)(*background)->pixels;
+	int			i;
 
-	SDL_FillRect(*background, &rect, WHITE);
+	i = x * (Uint32)(*background)->format->BytesPerPixel + y * (*background)->pitch;
+	pixels[i] = 0xff;
+	pixels[i + 1] = 0xff;
+	pixels[i + 2] = 0xff;
+	pixels[i + 3] = 0xff;
+}
+
+void draw_line(SDL_Surface **background, int x0, int y0, int x1, int y1) {
+	int dx = std::abs(x1 - x0);
+	int sx = (x0 < x1 ? 1 : -1);
+	int dy = -std::abs(y1 - y0);
+	int sy = (y0 < y1 ? 1 : -1);
+	int err = dx + dy;
+	int e2;
+
+	while (true) {
+		putpixel(background, x0, y0);
+		if (x0 == x1 && y0 == y1)
+			break;
+		e2 = 2 * err;
+		if (e2 >= dy) {
+			err += dy;
+			x0 += sx;
+		}
+		if (e2 <= dx) {
+			err += dx;
+			y0 += sy;
+		}
+	}
 }
 
 void	change_target_pos(SDL_DisplayMode screen, SDL_Rect *target, std::time_t *timestamp, Mix_Music *sound) {
@@ -56,10 +85,10 @@ int		main(int ac, char **av) {
 	SDL_Renderer	*renderer	= NULL;
 	SDL_Surface		*background	= NULL;
 	SDL_Surface		*square		= NULL;
+	Mix_Music		*sound		= NULL;
 	SDL_DisplayMode	screen;
 	SDL_Event		event;
 	SDL_Rect		target;
-	Mix_Music		*sound;
 	std::time_t		timestamp = time(nullptr);
 	bool			stop;
 
@@ -77,7 +106,7 @@ int		main(int ac, char **av) {
 			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
 				stop = true;
 			if (event.type == SDL_MOUSEMOTION) {
-				draw_line(&renderer, &background, event.motion);
+				draw_line(&background, event.motion.x - event.motion.xrel, event.motion.y - event.motion.yrel, event.motion.x, event.motion.y);
 				if (event.motion.x >= target.x && event.motion.y >= target.y &&
 						event.motion.x <= target.x + target.w && event.motion.y <= target.y + target.h)
 					change_target_pos(screen, &target, &timestamp, sound);
@@ -95,7 +124,11 @@ int		main(int ac, char **av) {
 		print_surface(&renderer, square, &target);
 		SDL_RenderPresent(renderer);
 	}
+	SDL_FreeSurface(square);
+	SDL_FreeSurface(background);
+	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
+	Mix_FreeMusic(sound);
 	SDL_Quit();
 	return (0);
 }
