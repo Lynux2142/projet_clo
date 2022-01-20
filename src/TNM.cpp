@@ -6,7 +6,7 @@
 /*   By: lynux <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 13:32:07 by lynux             #+#    #+#             */
-/*   Updated: 2022/01/20 16:44:49 by lynux            ###   ########.fr       */
+/*   Updated: 2022/01/20 16:52:57 by lynux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ void	init(SDL_DisplayMode screen, SDL_Window **window, SDL_Renderer **renderer, 
 void	print_surface(SDL_Renderer **renderer, SDL_Surface *surface, SDL_Rect *dest) {
 	SDL_Texture	*texture = NULL;
 
-	texture = SDL_CreateTextureFromSurface(*renderer, surface);
+	if ((texture = SDL_CreateTextureFromSurface(*renderer, surface)) == NULL)
+		SDL_ExitWithError("Error Create texture", SDL_GetError());
 	SDL_RenderCopy(*renderer, texture, NULL, dest);
 	SDL_DestroyTexture(texture);
 }
@@ -83,7 +84,7 @@ int		main(int ac, char **av) {
 			}
 			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
 				std::filesystem::create_directory("./output");
-				IMG_SavePNG(background, "./output/out.png");
+				SDL_SaveBMP(background, "./output/out.bmp");
 				stop = true;
 			}
 		}
