@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   TNM.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lynux <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: lguiller <lguiller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/20 13:32:07 by lynux             #+#    #+#             */
-/*   Updated: 2022/01/20 18:44:35 by lynux            ###   ########.fr       */
+/*   Created: 2022/01/21 11:50:28 by lguiller          #+#    #+#             */
+/*   Updated: 2022/01/21 11:50:30 by lguiller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	putpixel(SDL_Surface **background, int x, int y) {
 	pixels[i + 3] = 0xff;
 }
 
-void draw_line(SDL_Surface **background, int x0, int y0, int x1, int y1) {
+void draw_mouse_route(SDL_Surface **background, int x0, int y0, int x1, int y1) {
 	int dx = std::abs(x1 - x0);
 	int sx = (x0 < x1 ? 1 : -1);
 	int dy = -std::abs(y1 - y0);
@@ -106,7 +106,7 @@ int		main(int ac, char **av) {
 			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
 				stop = true;
 			if (event.type == SDL_MOUSEMOTION) {
-				draw_line(&background, event.motion.x - event.motion.xrel, event.motion.y - event.motion.yrel, event.motion.x, event.motion.y);
+				draw_mouse_route(&background, event.motion.x - event.motion.xrel, event.motion.y - event.motion.yrel, event.motion.x, event.motion.y);
 				if (event.motion.x >= target.x && event.motion.y >= target.y &&
 						event.motion.x <= target.x + target.w && event.motion.y <= target.y + target.h)
 					change_target_pos(screen, &target, &timestamp, sound);
