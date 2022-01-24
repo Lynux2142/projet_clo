@@ -6,7 +6,7 @@
 /*   By: lguiller <lguiller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 11:50:28 by lguiller          #+#    #+#             */
-/*   Updated: 2022/01/21 11:50:30 by lguiller         ###   ########.fr       */
+/*   Updated: 2022/01/24 15:34:06 by lguiller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	init(SDL_DisplayMode screen, SDL_Window **window, SDL_Renderer **renderer, 
 		SDL_ExitWithError("Error Create square", SDL_GetError());
 	if ((*sound = Mix_LoadMUS(MUSIC_PATH)) == NULL)
 		SDL_ExitWithError("Error Load music", Mix_GetError());
+	SDL_WarpMouseInWindow(*window, screen.w / 2, screen.h / 2);
 }
 
 void	print_surface(SDL_Renderer **renderer, SDL_Surface *surface, SDL_Rect *dest) {
@@ -44,10 +45,10 @@ void	putpixel(SDL_Surface **background, int x, int y) {
 	int			i;
 
 	i = x * (Uint32)(*background)->format->BytesPerPixel + y * (*background)->pitch;
-	pixels[i] = 0xff;
-	pixels[i + 1] = 0xff;
-	pixels[i + 2] = 0xff;
-	pixels[i + 3] = 0xff;
+	pixels[i] = (Uint8)((TRAIL_COLOR >> 24) & 0xff);
+	pixels[i + 1] = (Uint8)((TRAIL_COLOR >> 16) & 0xff);
+	pixels[i + 2] = (Uint8)((TRAIL_COLOR >> 8) & 0xff);
+	pixels[i + 3] = (Uint8)(TRAIL_COLOR & 0xff);
 }
 
 void draw_mouse_route(SDL_Surface **background, int x0, int y0, int x1, int y1) {
@@ -99,7 +100,7 @@ int		main(int ac, char **av) {
 		SDL_ExitWithError("Error Open audio", Mix_GetError());
 	SDL_GetCurrentDisplayMode(0, &screen);
 	init(screen, &window, &renderer, &background, &square, &sound);
-	SDL_FillRect(background, NULL, BLACK);
+	SDL_FillRect(background, NULL, BACKGROUND_COLOR);
 	change_target_pos(screen, &target, &timestamp, sound);
 	while (!stop) {
 		while (SDL_PollEvent(&event)) {
@@ -120,7 +121,7 @@ int		main(int ac, char **av) {
 		if (time(nullptr) - timestamp >= TIME_BEFORE_CHANGE)
 			change_target_pos(screen, &target, &timestamp, sound);
 		print_surface(&renderer, background, NULL);
-		SDL_FillRect(square, NULL, RED);
+		SDL_FillRect(square, NULL, SQUARE_COLOR);
 		print_surface(&renderer, square, &target);
 		SDL_RenderPresent(renderer);
 	}

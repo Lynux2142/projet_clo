@@ -6,7 +6,7 @@
 /*   By: lguiller <lguiller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/21 11:50:47 by lguiller          #+#    #+#             */
-/*   Updated: 2022/01/21 11:50:50 by lguiller         ###   ########.fr       */
+/*   Updated: 2022/01/24 15:31:19 by lguiller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,11 @@
 # define GMASK				0xff0000
 # define BMASK				0xff00
 # define AMASK				0xff
+# define WHITE				0xffffffff
 # define BLACK				0xff
 # define RED				0xff0000ff
-# define WHITE				0xffffffff
+# define BACKGROUND_COLOR	BLACK
+# define SQUARE_COLOR		RED
+# define TRAIL_COLOR		WHITE
 
 #endif
