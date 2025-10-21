@@ -22,12 +22,6 @@ class Game:
         self.options = OptionsMenu(self)
         self.current_menu = self.main_menu
 
-        self.grid = Grid(
-            rows=self.screen_h // SQUARE_SIZE,
-            cols=self.screen_w // SQUARE_SIZE,
-            cell_size=SQUARE_SIZE,
-        )
-
         self.up = False
         self.down = False
         self.left = False
@@ -36,6 +30,11 @@ class Game:
         self.pause = False
 
     def game_loop(self):
+        grid = Grid(
+            rows=self.screen_h // SQUARE_SIZE,
+            cols=self.screen_w // SQUARE_SIZE,
+            cell_size=SQUARE_SIZE,
+        )
         start = 0
         while self.playing:
             self.check_events()
@@ -43,7 +42,7 @@ class Game:
 
             if time() - start > NEW_CIRCLE_INTERVAL:
                 self.display.fill(Color.BLACK)
-                self.grid.draw_random_shape(self.display, shape="circle")
+                grid.draw_random_shape(self.display, shape=self.options.shape)
                 start = time()
 
             self.window.blit(self.display, (0, 0))
