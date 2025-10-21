@@ -2,7 +2,7 @@ from random import randint, choice
 from time import sleep, time
 import pygame
 
-NEW_CIRCLE_INTERVAL = 5
+NEW_CIRCLE_INTERVAL = 1
 SHAPE = "circle"            # options: "circle", "letter"
 
 SQUARE_SIZE = 100
