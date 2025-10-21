@@ -5,6 +5,9 @@ ITEM_SPACING = 80
 MENU_TITLE_SIZE = 80
 MENU_OPTION_SIZE = 60
 
+DEFAULT_SHAPE = "circle"
+DEFAULT_SIDE = "both"
+
 
 class Menu:
     def __init__(self, game):
@@ -73,6 +76,8 @@ class OptionsMenu(Menu):
         Menu.__init__(self, game)
         self.state = "shape"
         self.menu_options = ["Shape", "Side", "Back"]
+        self.shape = DEFAULT_SHAPE
+        self.side = DEFAULT_SIDE
 
     def display_menu(self):
         self.run_display = True
@@ -85,7 +90,12 @@ class OptionsMenu(Menu):
                 color = Color.WHITE
                 if self.state == option.lower():
                     color = Color.BLUE
-                self.game.draw_text(option, MENU_OPTION_SIZE, color, self.center_w, self.center_h - 20 + index * ITEM_SPACING)
+                text = option
+                if option == "Shape":
+                    text += f": {self.shape.capitalize()}"
+                elif option == "Side":
+                    text += f": {self.side.capitalize()}"
+                self.game.draw_text(text, MENU_OPTION_SIZE, color, self.center_w, self.center_h - 20 + index * ITEM_SPACING)
             self.blit_screen()
             self.game.reset_keys()
 
@@ -112,7 +122,13 @@ class OptionsMenu(Menu):
                 self.state = "shape"
                 self.run_display = False
                 self.game.current_menu = self.game.main_menu
+        if self.game.left or self.game.right:   # change options by pressing left/right because changing options with enter add generate unwanted shape change by entering in options menu
             if self.state == "shape":
-                print("change shape option")
+                self.shape = "letter" if self.shape == "circle" else "circle"
             if self.state == "side":
-                print("change side option")
+                if self.side == "both":
+                    self.side = "left"
+                elif self.side == "left":
+                    self.side = "right"
+                else:
+                    self.side = "both"
