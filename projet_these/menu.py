@@ -122,7 +122,7 @@ class MenuManager:
 
         self.options_menu = Menu(
             "Options",
-            ["Sound: ON", "Difficulty: Normal", "Back"],
+            ["Shape: Circle", "Side: Both", "Back"],
             self.screen,
             self.handle_options_selection,
         )
@@ -140,21 +140,21 @@ class MenuManager:
             sys.exit()
 
     def handle_options_selection(self, choice):
-        if choice.startswith("Sound"):
-            if "ON" in choice:
-                self.options_menu.options[0] = "Sound: OFF"
+        if choice.startswith("Shape"):
+            if "Circle" in choice:
+                self.options_menu.options[0] = "Shape: Letter"
             else:
-                self.options_menu.options[0] = "Sound: ON"
+                self.options_menu.options[0] = "Shape: Circle"
             self.options_menu._create_items()
 
-        elif choice.startswith("Difficulty"):
+        elif choice.startswith("Side"):
             current = self.options_menu.options[1]
-            if "Normal" in current:
-                self.options_menu.options[1] = "Difficulty: Hard"
-            elif "Hard" in current:
-                self.options_menu.options[1] = "Difficulty: Easy"
+            if "Both" in current:
+                self.options_menu.options[1] = "Side: Left"
+            elif "Left" in current:
+                self.options_menu.options[1] = "Side: Right"
             else:
-                self.options_menu.options[1] = "Difficulty: Normal"
+                self.options_menu.options[1] = "Side: Both"
             self.options_menu._create_items()
 
         elif choice == "Back":
