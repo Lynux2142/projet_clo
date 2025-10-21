@@ -65,6 +65,7 @@ class MainMenu(Menu):
                 self.run_display = False
                 self.game.playing = True
             elif self.state == "options":
+                self.state = "start"
                 self.run_display = False
                 self.game.current_menu = self.game.options
             elif self.state == "quit":

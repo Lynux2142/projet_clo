@@ -5,6 +5,9 @@ import pygame
 NEW_CIRCLE_INTERVAL = 1
 SHAPE = "circle"            # options: "circle", "letter"
 
+CROSS_SIZE = 10
+CROSS_BORDER_WIDTH = 3
+
 SQUARE_SIZE = 100
 SQUARE_BORDER_WIDTH = 1
 
@@ -23,37 +26,61 @@ GREEN = (50, 200, 50)
 BLUE = (50, 50, 200)
 
 class Circle:
-    def __init__(self, rows, cols, color):
+    def __init__(self, rows, cols, color, side):
         self.color = color
         self.possible_positions = [
             (row, col)
-            for row in range(rows)
-            for col in range(cols)
+            for row in range(0, rows)
+            for col in range(
+                0 if side != "right" else cols // 2,
+                cols if side != "left" else cols // 2
+            )
         ]
 
 class Letter:
-    def __init__(self, rows, cols, letter, color):
+    def __init__(self, rows, cols, letter, color, side):
         self.letter = letter
         self.color = color
         self.possible_positions = [
             (row, col)
-            for row in range(rows)
-            for col in range(cols)
+            for row in range(0, rows)
+            for col in range(
+                0 if side != "right" else cols // 2,
+                cols if side != "left" else cols // 2
+            )
         ]
 
 class Grid:
-    def __init__(self, rows, cols, cell_size):
+    def __init__(self, rows, cols, cell_size, side="both"):
         self.rows = rows
         self.cols = cols
         self.cell_size = cell_size
         self.circles = [
-            Circle(rows, cols, color)
+            Circle(rows, cols, color, side)
             for color in [RED, GREEN, BLUE]
         ]
         self.letters = [
-            Letter(rows, cols, letter, WHITE)
+            Letter(rows, cols, letter, WHITE, side)
             for letter in ['A', 'B', 'C']
         ]
+
+    def draw_center_cross(self, surface):
+        center_h = surface.get_width() // 2
+        center_w = surface.get_height() // 2
+        pygame.draw.line(
+            surface,
+            WHITE,
+            (center_h - CROSS_SIZE, center_w - CROSS_SIZE),
+            (center_h + CROSS_SIZE, center_w + CROSS_SIZE),
+            CROSS_BORDER_WIDTH,
+        )
+        pygame.draw.line(
+            surface,
+            WHITE,
+            (center_h + CROSS_SIZE, center_w - CROSS_SIZE),
+            (center_h - CROSS_SIZE, center_w + CROSS_SIZE),
+            CROSS_BORDER_WIDTH,
+        )
 
     def draw_grid(self, surface):
         for row in range(self.rows):

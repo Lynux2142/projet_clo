@@ -34,6 +34,7 @@ class Game:
             rows=self.screen_h // SQUARE_SIZE,
             cols=self.screen_w // SQUARE_SIZE,
             cell_size=SQUARE_SIZE,
+            side=self.options.side,
         )
         start = 0
         while self.playing:
@@ -42,6 +43,8 @@ class Game:
 
             if time() - start > NEW_CIRCLE_INTERVAL:
                 self.display.fill(Color.BLACK)
+                grid.draw_grid(self.display)
+                grid.draw_center_cross(self.display)
                 grid.draw_random_shape(self.display, shape=self.options.shape)
                 start = time()
 
@@ -71,7 +74,6 @@ class Game:
         if self.pause:
             self.playing = False
             self.pause = False
-            self.current_menu.display_menu()
         if self.up:
             print("Up key pressed")
         if self.down:
