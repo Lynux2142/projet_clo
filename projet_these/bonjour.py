@@ -1,9 +1,7 @@
 from random import randint, choice
 from time import sleep, time
 import pygame
-
-NEW_CIRCLE_INTERVAL = 1
-SHAPE = "circle"            # options: "circle", "letter"
+from constants import Color
 
 CROSS_SIZE = 10
 CROSS_BORDER_WIDTH = 3
@@ -15,15 +13,6 @@ CIRCLE_RADIUS = SQUARE_SIZE // 3 - SQUARE_BORDER_WIDTH
 
 FONT_NAME = "Comic Sans MS"
 FONT_SIZE = 80
-FONT_COLOR = (255, 255, 255)
-
-WHITE = (255, 255, 255)
-GREY = (200, 200, 200)
-BLACK = (0, 0, 0)
-
-RED = (200, 50, 50)
-GREEN = (50, 200, 50)
-BLUE = (50, 50, 200)
 
 class Circle:
     def __init__(self, rows, cols, color, side):
@@ -57,10 +46,10 @@ class Grid:
         self.cell_size = cell_size
         self.circles = [
             Circle(rows, cols, color, side)
-            for color in [RED, GREEN, BLUE]
+            for color in [Color.RED, Color.GREEN, Color.BLUE]
         ]
         self.letters = [
-            Letter(rows, cols, letter, WHITE, side)
+            Letter(rows, cols, letter, Color.WHITE, side)
             for letter in ['A', 'B', 'C']
         ]
 
@@ -69,14 +58,14 @@ class Grid:
         center_w = surface.get_height() // 2
         pygame.draw.line(
             surface,
-            WHITE,
+            Color.WHITE,
             (center_h - CROSS_SIZE, center_w - CROSS_SIZE),
             (center_h + CROSS_SIZE, center_w + CROSS_SIZE),
             CROSS_BORDER_WIDTH,
         )
         pygame.draw.line(
             surface,
-            WHITE,
+            Color.WHITE,
             (center_h + CROSS_SIZE, center_w - CROSS_SIZE),
             (center_h - CROSS_SIZE, center_w + CROSS_SIZE),
             CROSS_BORDER_WIDTH,
@@ -93,7 +82,7 @@ class Grid:
                 )
                 pygame.draw.rect(
                     surface,                # surface to draw on
-                    GREY,                   # color
+                    Color.GRAY,             # color
                     rect,                   # pygame.Rect object
                     SQUARE_BORDER_WIDTH,    # border width
                 )
@@ -126,7 +115,7 @@ class Grid:
         row, col = choice(letter.possible_positions)
         center_x = col * self.cell_size + self.cell_size // 2
         center_y = row * self.cell_size + self.cell_size // 2
-        text_surface = font.render(letter.letter, True, FONT_COLOR)
+        text_surface = font.render(letter.letter, True, Color.WHITE)
         text_rect = text_surface.get_rect(center=(center_x, center_y))
         surface.blit(text_surface, text_rect)
         del letter.possible_positions[
@@ -137,48 +126,8 @@ class Grid:
                 self.letters.index(letter)
             ]
 
-    def draw_random_shape(self, surface, shape: str = "circle"):
+    def draw_random_shape(self, surface, shape):
         if shape == "circle" and self.circles:
             self.draw_random_circle(surface)
         elif shape == "letter" and self.letters:
             self.draw_random_letter(surface)
-
-def main():
-    pygame.init()
-    pygame.font.init()
-    pygame.mouse.set_visible(False)                  # hide cursor
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    pygame.display.flip()
-    clock = pygame.time.Clock()
-    display_info = pygame.display.Info()
-    grid = Grid(
-        rows=display_info.current_h // SQUARE_SIZE,  # number of rows
-        cols=display_info.current_w // SQUARE_SIZE,  # number of columns
-        cell_size=SQUARE_SIZE                        # cell size
-    )
-
-    start = 0
-
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if (
-                event.type == pygame.QUIT or
-                (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE)
-            ):
-                running = False
-
-        if time() - start > NEW_CIRCLE_INTERVAL:
-            screen.fill(BLACK)
-            pygame.display.flip()
-            #grid.draw_grid(screen)
-            grid.draw_random_shape(screen, shape=SHAPE)
-            pygame.display.flip()
-            start = time()
-
-        clock.tick(30)
-
-    pygame.quit()
-
-if __name__ == "__main__":
-    main()

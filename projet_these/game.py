@@ -3,16 +3,18 @@ import pygame
 from constants import Color
 from menu import MainMenu, OptionsMenu
 from bonjour import (
-    NEW_CIRCLE_INTERVAL,
     SQUARE_SIZE,
     Grid,
 )
+
+NEW_SHAPE_INTERVAL = 1
 
 
 class Game:
     def __init__(self):
         pygame.init()
         pygame.font.init()
+        pygame.mouse.set_visible(False)
         self.screen_w = pygame.display.Info().current_w
         self.screen_h = pygame.display.Info().current_h
         self.running, self.playing = True, False
@@ -41,9 +43,9 @@ class Game:
             self.check_events()
             self.check_input()
 
-            if time() - start > NEW_CIRCLE_INTERVAL:
+            if time() - start > NEW_SHAPE_INTERVAL:
                 self.display.fill(Color.BLACK)
-                grid.draw_grid(self.display)
+                #grid.draw_grid(self.display)
                 grid.draw_center_cross(self.display)
                 grid.draw_random_shape(self.display, shape=self.options.shape)
                 start = time()
