@@ -2,16 +2,16 @@ from time import time
 import pygame
 from constants import Color
 from menu import MainMenu, OptionsMenu
-from bonjour import (
-    SQUARE_SIZE,
-    Grid,
-)
+from configparser import ConfigParser
+from grid import Grid
 
 NEW_SHAPE_INTERVAL = 1
 
 
 class Game:
     def __init__(self):
+        self.config = ConfigParser()
+        self.config.read("settings.ini")
         pygame.init()
         pygame.font.init()
         pygame.mouse.set_visible(False)
@@ -32,10 +32,12 @@ class Game:
         self.pause = False
 
     def game_loop(self):
+        clock = pygame.time.Clock()
         grid = Grid(
-            rows=self.screen_h // SQUARE_SIZE,
-            cols=self.screen_w // SQUARE_SIZE,
-            cell_size=SQUARE_SIZE,
+            game=self,
+            rows=self.screen_h // self.config.getint("square", "size"),
+            cols=self.screen_w // self.config.getint("square", "size"),
+            cell_size=self.config.getint("square", "size"),
             side=self.options.side,
         )
         start = 0
@@ -45,14 +47,15 @@ class Game:
 
             if time() - start > NEW_SHAPE_INTERVAL:
                 self.display.fill(Color.BLACK)
-                #grid.draw_grid(self.display)
-                grid.draw_center_cross(self.display)
-                grid.draw_random_shape(self.display, shape=self.options.shape)
+                grid.draw_grid()
+                grid.draw_center_cross()
+                grid.draw_random_shape(self.options.shape)
                 start = time()
 
             self.window.blit(self.display, (0, 0))
             pygame.display.flip()
             self.reset_keys()
+            clock.tick(60)
 
     def check_events(self):
         for event in pygame.event.get():
@@ -88,7 +91,7 @@ class Game:
             print("Action key pressed")
 
     def draw_text(self, text, size, color, x, y):
-        font = pygame.font.SysFont("Comic Sans MS", size)
+        font = pygame.font.SysFont(self.config.get("font", "name"), size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)

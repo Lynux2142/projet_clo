@@ -1,18 +1,6 @@
-from random import randint, choice
-from time import sleep, time
+from random import choice
 import pygame
 from constants import Color
-
-CROSS_SIZE = 10
-CROSS_BORDER_WIDTH = 3
-
-SQUARE_SIZE = 100
-SQUARE_BORDER_WIDTH = 1
-
-CIRCLE_RADIUS = SQUARE_SIZE // 3 - SQUARE_BORDER_WIDTH
-
-FONT_NAME = "Comic Sans MS"
-FONT_SIZE = 80
 
 class Circle:
     def __init__(self, rows, cols, color, side):
@@ -40,7 +28,8 @@ class Letter:
         ]
 
 class Grid:
-    def __init__(self, rows, cols, cell_size, side="both"):
+    def __init__(self, game, rows, cols, cell_size, side="both"):
+        self.game = game
         self.rows = rows
         self.cols = cols
         self.cell_size = cell_size
@@ -53,38 +42,39 @@ class Grid:
             for letter in ['A', 'B', 'C']
         ]
 
-    def draw_center_cross(self, surface):
-        center_h = surface.get_width() // 2
-        center_w = surface.get_height() // 2
+    def draw_center_cross(self):
+        center_h = self.game.display.get_width() // 2
+        center_w = self.game.display.get_height() // 2
+        cross_size = self.game.config.getint("cross", "size")
         pygame.draw.line(
-            surface,
+            self.game.display,
             Color.WHITE,
-            (center_h - CROSS_SIZE, center_w - CROSS_SIZE),
-            (center_h + CROSS_SIZE, center_w + CROSS_SIZE),
-            CROSS_BORDER_WIDTH,
+            (center_h - cross_size, center_w - cross_size),
+            (center_h + cross_size, center_w + cross_size),
+            self.game.config.getint("cross", "border_width"),
         )
         pygame.draw.line(
-            surface,
+            self.game.display,
             Color.WHITE,
-            (center_h + CROSS_SIZE, center_w - CROSS_SIZE),
-            (center_h - CROSS_SIZE, center_w + CROSS_SIZE),
-            CROSS_BORDER_WIDTH,
+            (center_h + cross_size, center_w - cross_size),
+            (center_h - cross_size, center_w + cross_size),
+            self.game.config.getint("cross", "border_width"),
         )
 
-    def draw_grid(self, surface):
+    def draw_grid(self):
         for row in range(self.rows):
             for col in range(self.cols):
                 rect = pygame.Rect(
-                    col * self.cell_size,   # x position
-                    row * self.cell_size,   # y position
-                    self.cell_size,         # width
-                    self.cell_size,         # height
+                    col * self.cell_size,
+                    row * self.cell_size,
+                    self.cell_size,
+                    self.cell_size,
                 )
                 pygame.draw.rect(
-                    surface,                # surface to draw on
-                    Color.GRAY,             # color
-                    rect,                   # pygame.Rect object
-                    SQUARE_BORDER_WIDTH,    # border width
+                    self.game.display,
+                    Color.GRAY,
+                    rect,
+                    self.game.config.getint("square", "border_width"),
                 )
 
     def draw_circle(self, surface, row, col, color):
@@ -93,8 +83,8 @@ class Grid:
         pygame.draw.circle(
             surface,
             color,
-            (center_x, center_y),           # center coordinates
-            CIRCLE_RADIUS,                  # circle radius
+            (center_x, center_y),
+            self.game.config.getint("circle", "radius"),
         )
 
     def draw_random_circle(self, surface):
@@ -110,7 +100,10 @@ class Grid:
             ]
 
     def draw_random_letter(self, surface):
-        font = pygame.font.SysFont(FONT_NAME, FONT_SIZE)
+        font = pygame.font.SysFont(
+            self.game.config.get("font", "name"),
+            self.game.config.getint("font", "size"),
+        )
         letter = choice(self.letters)
         row, col = choice(letter.possible_positions)
         center_x = col * self.cell_size + self.cell_size // 2
@@ -126,8 +119,8 @@ class Grid:
                 self.letters.index(letter)
             ]
 
-    def draw_random_shape(self, surface, shape):
+    def draw_random_shape(self, shape):
         if shape == "circle" and self.circles:
-            self.draw_random_circle(surface)
+            self.draw_random_circle(self.game.display)
         elif shape == "letter" and self.letters:
-            self.draw_random_letter(surface)
+            self.draw_random_letter(self.game.display)
