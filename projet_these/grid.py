@@ -10,7 +10,7 @@ class Circle:
             for row in range(0, rows)
             for col in range(
                 0 if side != "right" else cols // 2,
-                cols if side != "left" else cols // 2
+                cols if side != "left" else cols // 2,
             )
         ]
 
@@ -23,7 +23,7 @@ class Letter:
             for row in range(0, rows)
             for col in range(
                 0 if side != "right" else cols // 2,
-                cols if side != "left" else cols // 2
+                cols if side != "left" else cols // 2,
             )
         ]
 

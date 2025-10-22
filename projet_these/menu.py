@@ -135,7 +135,7 @@ class OptionsMenu(Menu):
                     self.side = "both"
 
 
-class ChoiceMenu(Menu):
+class QuestionMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
         self.state = 1
@@ -146,7 +146,6 @@ class ChoiceMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill(Color.BLACK)
-            circle_radius = self.game.config.getint("circle", "radius")
             self.game.draw_text(
                 "What was the color of the circle?",
                 50,
@@ -154,32 +153,32 @@ class ChoiceMenu(Menu):
                 self.center_w,
                 self.center_h - 100,
             )
-            pygame.draw.circle(
-                self.game.display,
-                Color.RED,
-                (self.center_w - circle_radius * 2 - 50, self.center_h - 20),
-                circle_radius,
-            )
-            pygame.draw.circle(
-                self.game.display,
-                Color.GREEN,
-                (self.center_w, self.center_h - 20),
-                circle_radius,
-            )
-            pygame.draw.circle(
-                self.game.display,
-                Color.BLUE,
-                (self.center_w + circle_radius * 2 + 50, self.center_h - 20),
-                circle_radius,
-            )
-            option_x = self.center_w - circle_radius * 2 - 50 + self.state * (circle_radius * 2 + 50)
-            pygame.draw.rect(
-                self.game.display,
-                Color.WHITE,
-                (option_x - circle_radius - 10, self.center_h - 20 - circle_radius - 10,
-                 circle_radius * 2 + 20, circle_radius * 2 + 20),
-                5,
-            )
+            circle_radius = self.game.config.getint("circle", "radius") # 30
+            choice = [
+                {"color": Color.RED, "position": (self.center_w - 200, self.center_h)},
+                {"color": Color.GREEN, "position": (self.center_w, self.center_h)},
+                {"color": Color.BLUE, "position": (self.center_w + 200, self.center_h)},
+            ]
+            square_gap = 10
+            for index, option in enumerate(choice):
+                pygame.draw.circle(
+                    self.game.display,
+                    option["color"],
+                    option["position"],
+                    circle_radius,
+                )
+                if self.state == index:
+                    pygame.draw.rect(
+                        self.game.display,
+                        Color.WHITE,
+                        (
+                            option["position"][0] - circle_radius - square_gap,
+                            option["position"][1] - circle_radius - square_gap,
+                            circle_radius * 2 + square_gap * 2,
+                            circle_radius * 2 + square_gap * 2,
+                        ),
+                        2,
+                    )
             self.blit_screen()
             self.game.reset_keys()
 

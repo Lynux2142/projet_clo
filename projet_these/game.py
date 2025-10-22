@@ -1,7 +1,7 @@
 from time import time
 import pygame
 from constants import Color
-from menu import MainMenu, OptionsMenu, ChoiceMenu
+from menu import MainMenu, OptionsMenu, QuestionMenu
 from configparser import ConfigParser
 from grid import Grid
 
@@ -22,7 +22,7 @@ class Game:
         self.window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.main_menu = MainMenu(self)
         self.option_menu = OptionsMenu(self)
-        self.choice_menu = ChoiceMenu(self)
+        self.question_menu = QuestionMenu(self)
         self.current_menu = self.main_menu
         self.new_shape = True
 
@@ -51,7 +51,7 @@ class Game:
                 self.new_shape = False
 
             if time() - start > NEW_SHAPE_INTERVAL:
-                self.choice_menu.display_menu()
+                self.question_menu.display_menu()
 
             self.window.blit(self.display, (0, 0))
             pygame.display.flip()
