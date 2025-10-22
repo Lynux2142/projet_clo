@@ -28,17 +28,18 @@ class Letter:
         ]
 
 class Grid:
-    def __init__(self, game, rows, cols, cell_size, side="both"):
+    def __init__(self, game):
         self.game = game
-        self.rows = rows
-        self.cols = cols
-        self.cell_size = cell_size
+        self.rows = self.game.screen_h // self.game.config.getint("square", "size")
+        self.cols = self.game.screen_w // self.game.config.getint("square", "size")
+        self.cell_size = self.game.config.getint("square", "size")
+        side = self.game.option_menu.side
         self.circles = [
-            Circle(rows, cols, color, side)
+            Circle(self.rows, self.cols, color, side)
             for color in [Color.RED, Color.GREEN, Color.BLUE]
         ]
         self.letters = [
-            Letter(rows, cols, letter, Color.WHITE, side)
+            Letter(self.rows, self.cols, letter, Color.WHITE, side)
             for letter in ['A', 'B', 'C']
         ]
 

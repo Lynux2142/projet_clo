@@ -35,13 +35,7 @@ class Game:
 
     def game_loop(self):
         clock = pygame.time.Clock()
-        grid = Grid(
-            game=self,
-            rows=self.screen_h // self.config.getint("square", "size"),
-            cols=self.screen_w // self.config.getint("square", "size"),
-            cell_size=self.config.getint("square", "size"),
-            side=self.option_menu.side,
-        )
+        grid = Grid(self)
         start = time()
         self.new_shape = True
         while self.playing:
