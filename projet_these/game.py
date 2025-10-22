@@ -1,11 +1,11 @@
 from time import time
 import pygame
 from constants import Color
-from menu import MainMenu, OptionsMenu
+from menu import MainMenu, OptionsMenu, ChoiceMenu
 from configparser import ConfigParser
 from grid import Grid
 
-NEW_SHAPE_INTERVAL = 1
+NEW_SHAPE_INTERVAL = 3
 
 
 class Game:
@@ -21,8 +21,10 @@ class Game:
         self.display = pygame.Surface((self.screen_w, self.screen_h))
         self.window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.main_menu = MainMenu(self)
-        self.options = OptionsMenu(self)
+        self.option_menu = OptionsMenu(self)
+        self.choice_menu = ChoiceMenu(self)
         self.current_menu = self.main_menu
+        self.new_shape = True
 
         self.up = False
         self.down = False
@@ -38,19 +40,24 @@ class Game:
             rows=self.screen_h // self.config.getint("square", "size"),
             cols=self.screen_w // self.config.getint("square", "size"),
             cell_size=self.config.getint("square", "size"),
-            side=self.options.side,
+            side=self.option_menu.side,
         )
-        start = 0
+        start = time()
+        self.new_shape = True
         while self.playing:
             self.check_events()
             self.check_input()
 
-            if time() - start > NEW_SHAPE_INTERVAL:
+            if self.new_shape:
                 self.display.fill(Color.BLACK)
-                grid.draw_grid()
+                #grid.draw_grid()
                 grid.draw_center_cross()
-                grid.draw_random_shape(self.options.shape)
+                grid.draw_random_shape(self.option_menu.shape)
                 start = time()
+                self.new_shape = False
+
+            if time() - start > NEW_SHAPE_INTERVAL:
+                self.choice_menu.display_menu()
 
             self.window.blit(self.display, (0, 0))
             pygame.display.flip()
@@ -88,7 +95,7 @@ class Game:
         if self.right:
             print("Right key pressed")
         if self.action:
-            print("Action key pressed")
+            self.new_shape = True
 
     def draw_text(self, text, size, color, x, y):
         font = pygame.font.SysFont(self.config.get("font", "name"), size)
