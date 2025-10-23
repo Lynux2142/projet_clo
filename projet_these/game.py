@@ -5,8 +5,6 @@ from menu import MainMenu, OptionsMenu, QuestionMenu
 from configparser import ConfigParser
 from grid import Grid
 
-NEW_SHAPE_INTERVAL = 3
-
 
 class Game:
     def __init__(self):
@@ -50,7 +48,7 @@ class Game:
                 start = time()
                 self.new_shape = False
 
-            if time() - start > NEW_SHAPE_INTERVAL:
+            if time() - start > self.config.getint("shape", "display_time"):
                 self.question_menu.display_menu()
 
             self.window.blit(self.display, (0, 0))
