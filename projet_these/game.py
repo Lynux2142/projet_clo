@@ -89,7 +89,7 @@ class Game:
         if self.right:
             print("Right key pressed")
         if self.action:
-            self.new_shape = True
+            print("Action key pressed")
 
     def draw_text(self, text, size, color, x, y):
         font = pygame.font.SysFont(self.config.get("font", "name"), size)
