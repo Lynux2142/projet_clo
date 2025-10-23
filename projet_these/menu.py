@@ -123,10 +123,9 @@ class OptionsMenu(Menu):
                 self.state = OptionEnum.SHAPE
                 self.run_display = False
                 self.game.current_menu = self.game.main_menu
-        if self.game.left or self.game.right:   # change options by pressing left/right because changing options with enter add generate unwanted shape change by entering in options menu
-            if self.state == OptionEnum.SHAPE:
+            elif self.state == OptionEnum.SHAPE:
                 self.shape = "letter" if self.shape == "circle" else "circle"
-            if self.state == OptionEnum.SIDE:
+            elif self.state == OptionEnum.SIDE:
                 if self.side == "both":
                     self.side = "left"
                 elif self.side == "left":
@@ -197,6 +196,6 @@ class QuestionMenu(Menu):
             self.game.playing = False
             self.run_display = False
             self.game.current_menu = self.game.main_menu
-        if self.game.action:
+        elif self.game.action:
             self.run_display = False
             self.game.new_shape = True

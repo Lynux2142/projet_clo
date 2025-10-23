@@ -78,16 +78,6 @@ class Game:
         if self.pause:
             self.playing = False
             self.pause = False
-        if self.up:
-            print("Up key pressed")
-        if self.down:
-            print("Down key pressed")
-        if self.left:
-            print("Left key pressed")
-        if self.right:
-            print("Right key pressed")
-        if self.action:
-            print("Action key pressed")
 
     def draw_text(self, text, size, color, x, y):
         font = pygame.font.SysFont(self.config.get("font", "name"), size)
