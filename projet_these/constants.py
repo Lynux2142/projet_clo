@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
 class Color:
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)

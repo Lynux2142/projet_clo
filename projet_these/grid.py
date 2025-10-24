@@ -2,7 +2,8 @@ from random import choice
 import pygame
 from constants import Color
 
-class Circle:
+
+class Shape:
     def __init__(self, rows, cols, color, side):
         self.color = color
         self.possible_positions = [
@@ -14,18 +15,15 @@ class Circle:
             )
         ]
 
-class Letter:
+
+class Circle(Shape):
+    def __init__(self, rows, cols, color, side):
+        super().__init__(rows, cols, color, side)
+
+class Letter(Shape):
     def __init__(self, rows, cols, letter, color, side):
+        super().__init__(rows, cols, color, side)
         self.letter = letter
-        self.color = color
-        self.possible_positions = [
-            (row, col)
-            for row in range(0, rows)
-            for col in range(
-                0 if side != "right" else cols // 2,
-                cols if side != "left" else cols // 2,
-            )
-        ]
 
 class Grid:
     def __init__(self, game):
@@ -40,7 +38,7 @@ class Grid:
         ]
         self.letters = [
             Letter(self.rows, self.cols, letter, Color.WHITE, side)
-            for letter in ['A', 'B', 'C']
+            for letter in ["A", "B", "C"]
         ]
 
     def draw_center_cross(self):
