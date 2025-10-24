@@ -1,4 +1,4 @@
-from random import choice
+from random import choice, randrange
 import pygame
 from constants import Color
 
@@ -87,7 +87,8 @@ class Grid:
         )
 
     def draw_random_circle(self, surface):
-        circle = choice(self.circles)
+        self.game.last_displayed_shape = randrange(len(self.circles))
+        circle = self.circles[self.game.last_displayed_shape]
         row, col = choice(circle.possible_positions)
         self.draw_circle(surface, row, col, circle.color)
         del circle.possible_positions[
@@ -99,17 +100,15 @@ class Grid:
             ]
 
     def draw_random_letter(self, surface):
-        font = pygame.font.SysFont(
-            self.game.config.get("font", "name"),
-            self.game.config.getint("font", "size"),
-        )
-        letter = choice(self.letters)
+        size = self.game.config.getint("font", "size")
+        self.game.last_displayed_shape = randrange(len(self.letters))
+        letter = self.letters[self.game.last_displayed_shape]
         row, col = choice(letter.possible_positions)
-        center_x = col * self.cell_size + self.cell_size // 2
-        center_y = row * self.cell_size + self.cell_size // 2
-        text_surface = font.render(letter.letter, True, Color.WHITE)
-        text_rect = text_surface.get_rect(center=(center_x, center_y))
-        surface.blit(text_surface, text_rect)
+        center = (
+            col * self.cell_size + self.cell_size // 2,
+            row * self.cell_size + self.cell_size // 2,
+        )
+        self.game.draw_text(letter.letter, size, Color.WHITE, *center)
         del letter.possible_positions[
             letter.possible_positions.index((row, col))
         ]

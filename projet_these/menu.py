@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from enum import IntEnum, auto
 import pygame
 from constants import Color
@@ -21,7 +22,7 @@ class OptionEnum(IntEnum):
     QUIT = auto()
 
 
-class Menu:
+class Menu(ABC):
     def __init__(self, game):
         self.game = game
         self.center_w = game.screen_w // 2
@@ -31,6 +32,18 @@ class Menu:
     def blit_screen(self):
         self.game.window.blit(self.game.display, (0, 0))
         pygame.display.flip()
+
+    @abstractmethod
+    def display_menu(self):
+        pass
+
+    @abstractmethod
+    def check_input(self):
+        pass
+
+    @abstractmethod
+    def move_cursor(self):
+        pass
 
 
 class MainMenu(Menu):
@@ -211,5 +224,9 @@ class QuestionMenu(Menu):
             self.run_display = False
             self.game.current_menu = self.game.main_menu
         elif self.game.action:
+            with open("results.csv", "a") as f:
+                success = self.game.last_displayed_shape == self.state
+                f.write(f"{success}\n")
+            self.state = 1
             self.run_display = False
             self.game.new_shape = True

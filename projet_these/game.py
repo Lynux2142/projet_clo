@@ -23,6 +23,7 @@ class Game:
         self.question_menu = QuestionMenu(self)
         self.current_menu = self.main_menu
         self.new_shape = True
+        self.last_displayed_shape = None
 
         self.up = False
         self.down = False
@@ -34,6 +35,7 @@ class Game:
     def game_loop(self):
         clock = pygame.time.Clock()
         grid = Grid(self)
+        display_time = self.config.getint("shape", "display_time")
         start = time()
         self.new_shape = True
         while self.playing:
@@ -48,7 +50,7 @@ class Game:
                 start = time()
                 self.new_shape = False
 
-            if time() - start > self.config.getint("shape", "display_time"):
+            if time() - start > display_time:
                 self.question_menu.display_menu()
 
             self.window.blit(self.display, (0, 0))
