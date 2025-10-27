@@ -43,14 +43,15 @@ class Game:
             self.check_input()
 
             if self.new_shape:
-                self.display.fill(Color.BLACK)
-                #grid.draw_grid()
+                self.display.fill(Color.BLACK.value)
+                grid.draw_grid()
                 grid.draw_center_cross()
                 grid.draw_random_shape(self.option_menu.shape)
                 start = time()
                 self.new_shape = False
 
             if time() - start > display_time:
+                self.last_displayed_shape.hiding_timestamp = time()
                 self.question_menu.display_menu()
 
             self.window.blit(self.display, (0, 0))

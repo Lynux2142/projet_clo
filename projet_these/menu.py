@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from time import time
 from enum import IntEnum, auto
 import pygame
 from constants import Color
@@ -57,12 +58,18 @@ class MainMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            self.game.display.fill(Color.BLACK)
-            self.game.draw_text("MAIN MENU", MENU_TITLE_SIZE, Color.WHITE, self.center_w, self.center_h - 100)
+            self.game.display.fill(Color.BLACK.value)
+            self.game.draw_text(
+                "MAIN MENU",
+                MENU_TITLE_SIZE,
+                Color.WHITE.value,
+                self.center_w,
+                self.center_h - 100
+            )
             for index, option in enumerate(self.menu_options):
-                color = Color.WHITE
+                color = Color.WHITE.value
                 if self.state == index:
-                    color = Color.BLUE
+                    color = Color.BLUE.value
                 self.game.draw_text(option, MENU_OPTION_SIZE, color, self.center_w, self.center_h - 20 + index * ITEM_SPACING)
             self.blit_screen()
             self.game.reset_keys()
@@ -79,6 +86,8 @@ class MainMenu(Menu):
         self.move_cursor()
         if self.game.action:
             if self.state == MainMenuEnum.START:
+                with open("results.csv", "w") as f:
+                    f.write("Shape;Coordinates;Choice;Success;ReactionTime\n")
                 self.run_display = False
                 self.game.playing = True
             elif self.state == MainMenuEnum.OPTIONS:
@@ -102,12 +111,18 @@ class OptionsMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            self.game.display.fill(Color.BLACK)
-            self.game.draw_text("OPTIONS", MENU_TITLE_SIZE, Color.WHITE, self.center_w, self.center_h - 100)
+            self.game.display.fill(Color.BLACK.value)
+            self.game.draw_text(
+                "OPTIONS",
+                MENU_TITLE_SIZE,
+                Color.WHITE.value,
+                self.center_w,
+                self.center_h - 100
+            )
             for index, option in enumerate(self.menu_options):
-                color = Color.WHITE
+                color = Color.WHITE.value
                 if self.state == index:
-                    color = Color.BLUE
+                    color = Color.BLUE.value
                 text = option
                 if option == "Shape":
                     text += f": {self.shape.capitalize()}"
@@ -151,28 +166,29 @@ class QuestionMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
         self.state = 1
+        self.choice = None
 
     def display_menu(self):
         self.run_display = True
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            self.game.display.fill(Color.BLACK)
+            self.game.display.fill(Color.BLACK.value)
             self.game.draw_text(
                 "What was the color of the cirlce?"
                 if self.game.option_menu.shape == "circle"
                 else "What was the letter?",
                 50,
-                Color.WHITE,
+                Color.WHITE.value,
                 self.center_w,
                 self.center_h - 100,
             )
             circle_radius = self.game.config.getint("circle", "radius")
-            choice = (
+            self.choice = (
                 [
-                    {"shape": Color.RED, "position": (self.center_w - 200, self.center_h)},
-                    {"shape": Color.GREEN, "position": (self.center_w, self.center_h)},
-                    {"shape": Color.BLUE, "position": (self.center_w + 200, self.center_h)},
+                    {"shape": "RED", "position": (self.center_w - 200, self.center_h)},
+                    {"shape": "GREEN", "position": (self.center_w, self.center_h)},
+                    {"shape": "BLUE", "position": (self.center_w + 200, self.center_h)},
                 ]
                 if self.game.option_menu.shape == "circle"
                 else [
@@ -182,11 +198,11 @@ class QuestionMenu(Menu):
                 ]
             )
             square_gap = 10
-            for index, option in enumerate(choice):
+            for index, option in enumerate(self.choice):
                 if self.game.option_menu.shape == "circle":
                     pygame.draw.circle(
                         self.game.display,
-                        option["shape"],
+                        Color[option["shape"]].value,
                         option["position"],
                         circle_radius,
                     )
@@ -194,7 +210,7 @@ class QuestionMenu(Menu):
                     self.game.draw_text(
                         option["shape"],
                         MENU_OPTION_SIZE,
-                        Color.WHITE,
+                        Color.WHITE.value,
                         *option["position"],
                     )
                 if self.state == index:
@@ -204,7 +220,7 @@ class QuestionMenu(Menu):
                         circle_radius * 2 + square_gap * 2,
                         circle_radius * 2 + square_gap * 2,
                     )
-            pygame.draw.rect(self.game.display, Color.WHITE, rect, 2)
+            pygame.draw.rect(self.game.display, Color.WHITE.value, rect, 2)
             self.blit_screen()
             self.game.reset_keys()
 
@@ -225,8 +241,12 @@ class QuestionMenu(Menu):
             self.game.current_menu = self.game.main_menu
         elif self.game.action:
             with open("results.csv", "a") as f:
-                success = self.game.last_displayed_shape == self.state
-                f.write(f"{success}\n")
+                metrics = self.game.last_displayed_shape
+                coordinates = f"{chr(ord('A') + metrics.position[0])}{metrics.position[1] + 1}"
+                choice = self.choice[self.state]["shape"]
+                success = metrics.id == choice
+                time_reaction = round(time() - metrics.hiding_timestamp, 2)
+                f.write(f"{metrics.id};{coordinates};{choice};{success};{time_reaction}\n")
             self.state = 1
             self.run_display = False
             self.game.new_shape = True
