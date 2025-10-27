@@ -1,4 +1,5 @@
 from time import time
+from random import randint
 import pygame
 from constants import Color
 from menu import MainMenu, OptionsMenu, QuestionMenu
@@ -23,7 +24,6 @@ class Game:
         self.option_menu = OptionsMenu(self)
         self.question_menu = QuestionMenu(self)
         self.current_menu = self.main_menu
-        self.new_shape = True
         self.last_displayed_shape = None
 
         self.up = False
@@ -36,25 +36,49 @@ class Game:
     def game_loop(self):
         clock = pygame.time.Clock()
         grid = Grid(self)
-        display_time = self.config.getint("shape", "display_time")
+        first_phase_lower_time = self.config.getint("shape", "first_phase_lower_time")
+        first_phase_upper_time = self.config.getint("shape", "first_phase_upper_time")
+        first_phase_time = randint(first_phase_lower_time, first_phase_upper_time)
+        second_phase_time = self.config.getint("shape", "second_phase_time") / 1000
+        third_phase_time = self.config.getint("shape", "third_phase_time") / 1000
         start = time()
-        self.new_shape = True
+        new_shape = True
+        phase = 1
         while self.playing:
             self.check_events()
             self.check_input()
 
-            if self.new_shape:
+            if phase == 1:
                 self.display.fill(Color.BLACK.value)
+                grid.draw_center_cross()
+                if time() - start > first_phase_time / 1000:
+                    phase += 1
+                    start = time()
+
+            if phase == 2:
                 if self.config.getboolean("grid", "show_grid"):
                     grid.draw_grid()
                 grid.draw_center_cross()
-                grid.draw_random_shape(self.option_menu.shape)
-                start = time()
-                self.new_shape = False
+                if new_shape:
+                    grid.draw_random_shape(self.option_menu.shape)
+                    new_shape = False
+                if time() - start > second_phase_time:
+                    phase += 1
+                    start = time()
 
-            if time() - start > display_time:
+            if phase == 3:
+                self.display.fill(Color.BLACK.value)
+                grid.draw_center_cross()
+                if time() - start > third_phase_time:
+                    phase += 1
+
+            if phase == 4:
                 self.last_displayed_shape.hiding_timestamp = time()
                 self.question_menu.display_menu()
+                phase = 1
+                new_shape = True
+                first_phase_time = randint(first_phase_lower_time, first_phase_upper_time)
+                start = time()
 
             self.window.blit(self.display, (0, 0))
             pygame.display.flip()

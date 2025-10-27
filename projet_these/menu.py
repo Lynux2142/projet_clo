@@ -192,9 +192,9 @@ class QuestionMenu(Menu):
                 ]
                 if self.game.option_menu.shape == "circle"
                 else [
-                    {"shape": "A", "position": (self.center_w - 200, self.center_h)},
-                    {"shape": "B", "position": (self.center_w, self.center_h)},
-                    {"shape": "C", "position": (self.center_w + 200, self.center_h)},
+                    {"shape": "T", "position": (self.center_w - 200, self.center_h)},
+                    {"shape": "S", "position": (self.center_w, self.center_h)},
+                    {"shape": "N", "position": (self.center_w + 200, self.center_h)},
                 ]
             )
             square_gap = 10
