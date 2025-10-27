@@ -92,17 +92,17 @@ class Grid:
         cross_size = self.game.config.getint("cross", "size")
         pygame.draw.line(
             self.game.display,
-            Color.WHITE.value,
-            (center_h - cross_size, center_w - cross_size),
-            (center_h + cross_size, center_w + cross_size),
-            self.game.config.getint("cross", "border_width"),
+            Color.GRAY.value,
+            (center_h - cross_size // 2, center_w),
+            (center_h + cross_size // 2, center_w),
+            self.game.config.getint("cross", "thickness"),
         )
         pygame.draw.line(
             self.game.display,
-            Color.WHITE.value,
-            (center_h + cross_size, center_w - cross_size),
-            (center_h - cross_size, center_w + cross_size),
-            self.game.config.getint("cross", "border_width"),
+            Color.GRAY.value,
+            (center_h, center_w - cross_size // 2),
+            (center_h, center_w + cross_size // 2),
+            self.game.config.getint("cross", "thickness"),
         )
 
     def draw_grid(self):
