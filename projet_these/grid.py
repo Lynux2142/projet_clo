@@ -16,7 +16,8 @@ class Shape(ABC):
                 cols if side != "left" else cols // 2,
             )
         ]
-        self.cell_size = self.game.config.getint("square", "size")
+        self.cell_width = self.game.config.getint("grid", "square_width")
+        self.cell_height = self.game.config.getint("grid", "square_height")
         self.hiding_timestamp = None
         self.position = None
 
@@ -34,8 +35,8 @@ class Circle(Shape):
     def draw(self):
         self.position = choice(self.possible_positions)
         center = (
-            self.position[0] * self.cell_size + self.cell_size // 2,
-            self.position[1] * self.cell_size + self.cell_size // 2,
+            self.position[0] * self.cell_width + self.cell_width // 2,
+            self.position[1] * self.cell_height + self.cell_height // 2,
         )
         pygame.draw.circle(
             self.game.display,
@@ -56,8 +57,8 @@ class Letter(Shape):
         self.position = choice(self.possible_positions)
         size = self.game.config.getint("font", "size")
         center = (
-            self.position[0] * self.cell_size + self.cell_size // 2,
-            self.position[1] * self.cell_size + self.cell_size // 2,
+            self.position[0] * self.cell_width + self.cell_width // 2,
+            self.position[1] * self.cell_height + self.cell_height // 2,
         )
         self.game.draw_text(self.id, size, Color.WHITE.value, *center)
         del self.possible_positions[
@@ -67,9 +68,10 @@ class Letter(Shape):
 class Grid:
     def __init__(self, game):
         self.game = game
-        self.rows = self.game.screen_h // self.game.config.getint("square", "size")
-        self.cols = self.game.screen_w // self.game.config.getint("square", "size")
-        self.cell_size = self.game.config.getint("square", "size")
+        self.cols = self.game.screen_w // self.game.config.getint("grid", "square_width")
+        self.rows = self.game.screen_h // self.game.config.getint("grid", "square_height")
+        self.cell_width = self.game.config.getint("grid", "square_width")
+        self.cell_height = self.game.config.getint("grid", "square_height")
         side = self.game.option_menu.side
         shape = self.game.option_menu.shape
         self.shapes = (
@@ -107,16 +109,16 @@ class Grid:
         for row in range(self.rows):
             for col in range(self.cols):
                 rect = pygame.Rect(
-                    col * self.cell_size,
-                    row * self.cell_size,
-                    self.cell_size,
-                    self.cell_size,
+                    col * self.cell_width,
+                    row * self.cell_height,
+                    self.cell_width,
+                    self.cell_height,
                 )
                 pygame.draw.rect(
                     self.game.display,
                     Color.GRAY.value,
                     rect,
-                    self.game.config.getint("square", "border_width"),
+                    self.game.config.getint("grid", "border_width"),
                 )
 
     def draw_random_shape(self, shape):

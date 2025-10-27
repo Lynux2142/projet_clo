@@ -13,8 +13,9 @@ class Game:
         pygame.init()
         pygame.font.init()
         pygame.mouse.set_visible(False)
-        self.screen_w = pygame.display.Info().current_w
-        self.screen_h = pygame.display.Info().current_h
+        display_info = pygame.display.Info()
+        self.screen_w = display_info.current_w
+        self.screen_h = display_info.current_h
         self.running, self.playing = True, False
         self.display = pygame.Surface((self.screen_w, self.screen_h))
         self.window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -44,7 +45,8 @@ class Game:
 
             if self.new_shape:
                 self.display.fill(Color.BLACK.value)
-                grid.draw_grid()
+                if self.config.getboolean("grid", "show_grid"):
+                    grid.draw_grid()
                 grid.draw_center_cross()
                 grid.draw_random_shape(self.option_menu.shape)
                 start = time()
