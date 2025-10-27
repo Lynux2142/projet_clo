@@ -186,15 +186,15 @@ class QuestionMenu(Menu):
             circle_radius = self.game.config.getint("circle", "radius")
             self.choice = (
                 [
-                    {"shape": "RED", "position": (self.center_w - 200, self.center_h)},
-                    {"shape": "GREEN", "position": (self.center_w, self.center_h)},
-                    {"shape": "BLUE", "position": (self.center_w + 200, self.center_h)},
+                    {"shape": "RED", "position": (self.center_w, self.center_h)},
+                    {"shape": "GREEN", "position": (self.center_w, self.center_h + 100)},
+                    {"shape": "BLUE", "position": (self.center_w, self.center_h + 200)},
                 ]
                 if self.game.option_menu.shape == "circle"
                 else [
-                    {"shape": "T", "position": (self.center_w - 200, self.center_h)},
-                    {"shape": "S", "position": (self.center_w, self.center_h)},
-                    {"shape": "N", "position": (self.center_w + 200, self.center_h)},
+                    {"shape": "T", "position": (self.center_w, self.center_h)},
+                    {"shape": "S", "position": (self.center_w, self.center_h + 100)},
+                    {"shape": "N", "position": (self.center_w, self.center_h + 200)},
                 ]
             )
             square_gap = 10
@@ -225,10 +225,10 @@ class QuestionMenu(Menu):
             self.game.reset_keys()
 
     def move_cursor(self):
-        if self.game.left:
+        if self.game.up:
             if self.state > 0:
                 self.state -= 1
-        elif self.game.right:
+        elif self.game.down:
             if self.state < 2:
                 self.state += 1
 
