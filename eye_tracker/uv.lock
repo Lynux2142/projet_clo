@@ -1,0 +1,24 @@
+version = 1
+revision = 3
+requires-python = ">=3.10"
+
+[[package]]
+name = "eye-tracker"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "tobii-research" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "tobii-research", specifier = ">=2.1.0" }]
+
+[[package]]
+name = "tobii-research"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8d/5f/250eeac67f510e0a30dc3d881094da9e2cf03c1e4c11639ee7d89ef3c7cd/tobii_research-2.1.0-cp310-cp310-macosx_14_0_universal2.whl", hash = "sha256:a6f7f4ec4996afd0b13ce256f35908b5259efbf1a6163ac1a75dbae59fa546d4", size = 429000, upload-time = "2024-11-27T13:53:02.082Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/c2/b0f52063dca55918e87d929ba8e78e1ac6dad464b4377c3fbd6a56c583a1/tobii_research-2.1.0-cp310-cp310-manylinux2014_x86_64.whl", hash = "sha256:bf83653f92794e85cc7b17518f9115e96595cc47193695755c1ce98bc854e5b1", size = 318372, upload-time = "2024-11-27T13:53:03.858Z" },
+    { url = "https://files.pythonhosted.org/packages/98/13/b78b1985cbcedfdced1a37b3c24afbe58ae2bfa51f793c58b057a4132fce/tobii_research-2.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:9b6a09cde04225a3fd63a0c6264810f65fa20192f98c6f318577ae5848a46bc3", size = 387307, upload-time = "2024-11-27T13:53:06.232Z" },
+]
