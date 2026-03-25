@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -9,31 +10,37 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func shuffle_text(text string) string {
-	var letters []rune
-	for _, r := range text {
-		if r != ' ' && r != '\n' {
-			letters = append(letters, r)
-		}
-	}
-
-	rand.Shuffle(len(letters), func(i, j int) {
-		letters[i], letters[j] = letters[j], letters[i]
+func shuffleRunes(runes []rune) {
+	rand.Shuffle(len(runes), func(i, j int) {
+		runes[i], runes[j] = runes[j], runes[i]
 	})
+}
 
-	result := make([]rune, 0, len(text))
-	letterIndex := 0
+func shuffle_text(text string) string {
+	lines := strings.Split(text, "\n")
 
-	for _, r := range text {
-		if r == ' ' || r == '\n' {
-			result = append(result, r)
-		} else {
-			result = append(result, letters[letterIndex])
-			letterIndex++
+	for i, line := range lines {
+		var letters []rune
+		for _, r := range line {
+			if r != ' ' {
+				letters = append(letters, r)
+			}
 		}
+
+		shuffleRunes(letters)
+
+		resultLine := []rune(line)
+		letterIndex := 0
+		for j, r := range resultLine {
+			if r != ' ' {
+				resultLine[j] = letters[letterIndex]
+				letterIndex++
+			}
+		}
+		lines[i] = string(resultLine)
 	}
 
-	return string(result)
+	return strings.Join(lines, "\n")
 }
 
 func main() {
