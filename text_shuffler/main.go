@@ -3,6 +3,7 @@ package main
 import (
 	"math/rand"
 	"strings"
+	"unicode"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -22,7 +23,7 @@ func shuffle_text(text string) string {
 	for i, line := range lines {
 		var letters []rune
 		for _, r := range line {
-			if r != ' ' {
+			if unicode.IsLetter(r) {
 				letters = append(letters, r)
 			}
 		}
@@ -32,7 +33,7 @@ func shuffle_text(text string) string {
 		resultLine := []rune(line)
 		letterIndex := 0
 		for j, r := range resultLine {
-			if r != ' ' {
+			if unicode.IsLetter(r) {
 				resultLine[j] = letters[letterIndex]
 				letterIndex++
 			}
