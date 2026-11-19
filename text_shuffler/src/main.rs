@@ -29,6 +29,7 @@ fn shuffle_text(text: &str) -> String {
 struct TextShufflerApp {
     input: String,
     output: String,
+    copied: bool,
 }
 
 impl eframe::App for TextShufflerApp {
@@ -65,15 +66,28 @@ impl eframe::App for TextShufflerApp {
             ui.add_space(6.0);
 
             ui.horizontal(|ui| {
-                let button_width = 120.0;
-                let offset = ((ui.available_width() - button_width) / 2.0).max(0.0);
+                let shuffle_width = 120.0;
+                let copy_width = 120.0;
+                let spacing = ui.spacing().item_spacing.x;
+                let total_width = shuffle_width + spacing + copy_width;
+                let offset = ((ui.available_width() - total_width) / 2.0).max(0.0);
                 ui.add_space(offset);
 
                 if ui
-                    .add_sized([button_width, 28.0], egui::Button::new("Shuffle Text"))
+                    .add_sized([shuffle_width, 28.0], egui::Button::new("Shuffle Text"))
                     .clicked()
                 {
                     self.output = shuffle_text(&self.input);
+                    self.copied = false;
+                }
+
+                let copy_label = if self.copied { "Copied!" } else { "Copy Output" };
+                if ui
+                    .add_sized([copy_width, 28.0], egui::Button::new(copy_label))
+                    .clicked()
+                {
+                    ui.ctx().copy_text(self.output.clone());
+                    self.copied = true;
                 }
             });
         });
